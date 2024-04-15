@@ -1,36 +1,41 @@
 package com.avengers.studentManagement;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class StudentController {
-    HashMap<Integer,Student> db = new HashMap<>();
 
+    Map<Integer,Student> db = new HashMap<>();
+
+    @Autowired
+    StudentSevice studentSevice;
     //get student
     @GetMapping("/get_student")
     public Student getStudent(@RequestParam("q") int admnNo){
-        return db.get(admnNo);
+        return studentSevice.getStudent(admnNo);
     }
 
     // add student
     @PostMapping("/add_Student")
     public String addStudent(@RequestBody Student student){
 
-        int admnNo = student.getAdmnNo();
-        db.put(admnNo,student);
-
-        return "Student is added";
+        return studentSevice.addStudent(student);
 
     }
 
     // delete the student
-    @PostMapping("/del_student")
-    public  String deleteStudent(@RequestParam("q") int admnNo){
+    @DeleteMapping("/del_student")
+    public  String deleteStudent(@PathVariable("id") int id){
+        return  studentSevice.deleteStudent(id);
+    }
 
-        db.remove(admnNo);
-        return  "Studnet is deleted  ";
-
+    // Update Student
+    @PostMapping("/update_student")
+    public String upadateStudent(@RequestParam("id") int admnNo, @RequestParam("age") int age){
+        return studentSevice.updateStudent(admnNo,age);
     }
 }
